@@ -1,4 +1,4 @@
-# feathers-test
+# equibit-api
 
 > 
 
@@ -8,13 +8,13 @@ This project uses [Feathers](http://feathersjs.com). An open source web framewor
 
 ## Getting Started
 
-Getting up and running is as easy as 1, 2, 3.
+Getting up and running:
 
 1. Make sure you have [NodeJS](https://nodejs.org/) and [npm](https://www.npmjs.com/) installed.
 2. Install your dependencies
     
     ```
-    cd path/to/feathers-test; npm install
+    cd path/to/equibit-api; npm install
     ```
 
 3. Start your app

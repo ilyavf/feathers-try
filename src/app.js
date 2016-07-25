@@ -12,15 +12,24 @@ const rest = require('feathers-rest');
 const bodyParser = require('body-parser');
 const socketio = require('feathers-socketio');
 const middleware = require('./middleware');
+const getToken = require('./middleware/get-token');
 const services = require('./services');
 
 const app = feathers();
 
 app.configure(configuration(path.join(__dirname, '..')));
 
+const whitelist = app.get('corsWhitelist');
+const corsOptions = {
+  origin(origin, callback){
+    const originIsWhitelisted = whitelist.indexOf(origin) !== -1;
+    callback(null, originIsWhitelisted);
+  }
+};
+
 app.use(compress())
-  .options('*', cors())
-  .use(cors())
+  .options('*', cors(corsOptions))
+  .use(cors(corsOptions))
   .use(favicon( path.join(app.get('public'), 'favicon.ico') ))
   .use('/', serveStatic( app.get('public') ))
   .use(bodyParser.json())
@@ -28,6 +37,13 @@ app.use(compress())
   .configure(hooks())
   .configure(rest())
   .configure(socketio())
+  .configure(socketio(function(io) {
+    io.use(function (socket, next) {
+      socket.feathers = {token: socket.request.headers.auth};
+      next();
+    });
+  }))
+  .use(getToken(app))
   .configure(services)
   .configure(middleware);
 
